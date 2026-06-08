@@ -54,6 +54,36 @@ const Property = sequelize.define('Property', {
     isFeatured: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    description: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    images: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        get() {
+            const rawValue = this.getDataValue('images');
+            return rawValue ? rawValue.split(',') : [];
+        },
+        set(val) {
+            this.setDataValue('images', Array.isArray(val) ? val.join(',') : val);
+        }
+    },
+    mapUrl: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    amenities: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+        get() {
+            const rawValue = this.getDataValue('amenities');
+            return rawValue ? rawValue.split(',') : [];
+        },
+        set(val) {
+            this.setDataValue('amenities', Array.isArray(val) ? val.join(',') : val);
+        }
     }
 });
 
