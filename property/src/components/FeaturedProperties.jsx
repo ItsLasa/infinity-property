@@ -1,5 +1,6 @@
 import { Bed, Bath, Maximize, ArrowRight, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 // ── Inline SVG decorations ────────────────────────────────────────────────────
@@ -207,9 +208,9 @@ function PropertyCard({ property }) {
 
         <div className="mt-5 pt-5 border-t flex items-center justify-between">
           <span className="text-xl font-bold text-green-800">{property.price}</span>
-          <button className="flex items-center gap-1 text-sm font-medium text-green-800 hover:gap-2 transition-all">
+          <Link to={`/properties/${property.id}`} className="flex items-center gap-1 text-sm font-medium text-green-800 hover:gap-2 transition-all">
             View Details <ArrowRight size={16} />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
