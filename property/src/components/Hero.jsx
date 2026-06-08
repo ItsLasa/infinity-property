@@ -2,10 +2,12 @@ import { Search, MapPin, Home, Building2, ChevronLeft, ChevronRight } from 'luci
 import { FaFacebook, FaYoutube, FaLinkedin, FaInstagram } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 
+import { useNavigate } from 'react-router-dom'
+
 const tabs = [
-  { id: 'lands', label: 'Lands', icon: MapPin },
-  { id: 'houses', label: 'Houses', icon: Home },
-  { id: 'apartments', label: 'Apartments', icon: Building2 },
+  { id: 'lands', label: 'Lands', icon: MapPin, path: '/lands' },
+  { id: 'houses', label: 'Houses', icon: Home, path: '/houses' },
+  { id: 'apartments', label: 'Apartments', icon: Building2, path: '/apartments' },
 ]
 
 const heroBanners = [
@@ -23,6 +25,18 @@ const districts = [
 export default function Hero() {
   const [activeTab, setActiveTab] = useState('lands')
   const [currentImage, setCurrentImage] = useState(0)
+  const [district, setDistrict] = useState('All Districts')
+  const [search, setSearch] = useState('')
+  const navigate = useNavigate()
+
+  const handleSearch = () => {
+    const selectedTab = tabs.find(t => t.id === activeTab)
+    const query = new URLSearchParams()
+    if (district !== 'All Districts') query.append('district', district)
+    if (search) query.append('search', search)
+    
+    navigate(`${selectedTab.path}?${query.toString()}`)
+  }
 
   // Auto-rotate images
   useEffect(() => {
@@ -85,7 +99,11 @@ export default function Hero() {
           </div>
 
           <div className="flex flex-col md:flex-row gap-3">
-            <select className="flex-1 h-12 px-4 rounded border border-outline-border text-sm text-on-surface bg-paper-white focus:border-heritage-green focus:outline-none transition-colors">
+            <select 
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="flex-1 h-12 px-4 rounded border border-outline-border text-sm text-on-surface bg-paper-white focus:border-heritage-green focus:outline-none transition-colors"
+            >
               {districts.map((d) => (
                 <option key={d} value={d}>{d}</option>
               ))}
@@ -93,9 +111,14 @@ export default function Hero() {
             <input
               type="text"
               placeholder="Search by project name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               className="flex-1 h-12 px-4 rounded border border-outline-border text-sm text-on-surface bg-paper-white focus:border-heritage-green focus:outline-none transition-colors"
             />
-            <button className="h-12 px-6 bg-heritage-green text-paper-white rounded flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-wider hover:bg-heritage-green-dark transition-colors">
+            <button 
+                onClick={handleSearch}
+                className="h-12 px-6 bg-heritage-green text-paper-white rounded flex items-center justify-center gap-2 text-sm font-semibold uppercase tracking-wider hover:bg-heritage-green-dark transition-colors"
+            >
               <Search className="w-4 h-4" />
               Search
             </button>
