@@ -1,5 +1,6 @@
 import { MapPin, ArrowRight, Search, Building2, TreePine, TrendingUp } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
 import PageHero from '../components/PageHero'
 import Footer from '../components/Footer'
@@ -17,10 +18,20 @@ const stats = [
 ]
 
 export default function LandsPage() {
+  const [searchParams] = useSearchParams()
   const [lands, setLands] = useState([])
-  const [selectedDistrict, setSelectedDistrict] = useState('All Districts')
-  const [searchTerm, setSearchTerm] = useState('')
+  const [selectedDistrict, setSelectedDistrict] = useState(searchParams.get('district') || 'All Districts')
+  const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
   const [loading, setLoading] = useState(true)
+  const [sortBy, setSortBy] = useState('newest') // newest, price-low, price-high
+  const [minPrice, setMinPrice] = useState('')
+  const [maxPrice, setMaxPrice] = useState('')
+
+  // Helper to convert string prices (e.g., "1,500,000") to numbers
+  const parsePrice = (priceStr) => {
+    if (!priceStr) return 0;
+    return parseFloat(priceStr.toString().replace(/,/g, ''));
+  }
 
   useEffect(() => {
     const fetchLands = async () => {
@@ -36,13 +47,22 @@ export default function LandsPage() {
     fetchLands()
   }, [])
 
-  const filtered = lands.filter((land) => {
-    const matchDistrict = selectedDistrict === 'All Districts' || land.district === selectedDistrict
-    const matchSearch =
-      land.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      land.location.toLowerCase().includes(searchTerm.toLowerCase())
-    return matchDistrict && matchSearch
-  })
+  const filtered = lands
+    .filter((l) => {
+      const matchDistrict = selectedDistrict === 'All Districts' || l.district === selectedDistrict;
+      const matchSearch = l.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          l.location.toLowerCase().includes(searchTerm.toLowerCase());
+      const priceVal = parsePrice(l.price);
+      const matchMin = minPrice === '' || priceVal >= parseFloat(minPrice);
+      const matchMax = maxPrice === '' || priceVal <= parseFloat(maxPrice);
+      
+      return matchDistrict && matchSearch && matchMin && matchMax;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'price-low') return parsePrice(a.price) - parsePrice(b.price);
+      if (sortBy === 'price-high') return parsePrice(b.price) - parsePrice(a.price);
+      return b.id - a.id; // newest (by ID)
+    });
 
   return (
     <div className="min-h-screen" style={{ background: '#f7f8f4' }}>
@@ -236,6 +256,37 @@ export default function LandsPage() {
               />
             </div>
 
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="h-12 px-4 rounded-xl border text-sm bg-paper-white focus:outline-none transition-colors"
+              style={{ borderColor: 'rgba(68,97,74,0.25)', minWidth: '150px' }}
+            >
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+            </select>
+
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                placeholder="Min Rs."
+                value={minPrice}
+                onChange={(e) => setMinPrice(e.target.value)}
+                className="w-24 h-12 px-3 rounded-xl border text-sm bg-paper-white focus:outline-none transition-colors"
+                style={{ borderColor: 'rgba(68,97,74,0.25)' }}
+              />
+              <span className="text-gray-400 font-bold">-</span>
+              <input
+                type="number"
+                placeholder="Max Rs."
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(e.target.value)}
+                className="w-24 h-12 px-3 rounded-xl border text-sm bg-paper-white focus:outline-none transition-colors"
+                style={{ borderColor: 'rgba(68,97,74,0.25)' }}
+              />
+            </div>
+
             <div className="flex items-center gap-2 px-4 h-12 rounded-xl text-sm font-medium text-outline"
               style={{ background: 'rgba(68,97,74,0.06)', border: '1px solid rgba(68,97,74,0.15)' }}
             >
@@ -311,7 +362,8 @@ export default function LandsPage() {
                       </div>
                     </div>
 
-                    <button
+                    <Link
+                      to={`/properties/${land.id}`}
                       className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all duration-300 group/btn"
                       style={{ background: 'rgba(68,97,74,0.9)', color: '#fff', border: '1px solid rgba(186,218,190,0.3)' }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = '#44614A' }}
@@ -319,7 +371,7 @@ export default function LandsPage() {
                     >
                       Explore Land
                       <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                    </button>
+                    </Link>
                   </div>
                 </div>
               </div>
