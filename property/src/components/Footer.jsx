@@ -3,13 +3,13 @@ import { FaFacebook, FaYoutube, FaLinkedin, FaInstagram } from 'react-icons/fa'
 
 const footerLinks = {
   'Quick Links': [
-    'Home', 'Lands', 'Houses', 'Apartments', 'Portfolio Properties',
+    'Home', 'Lands', 'Houses', 'Apartments',
   ],
   'Company': [
-    'About Us', 'Services', 'Careers', 'News', 'Blogs',
+    'About Us', 'Services', 'Blogs',
   ],
   'Support': [
-    'Contact Us', 'Sell Your Land','Testimonials',
+    'Contact Us', 'Sell Your Land',
   ],
 }
 
@@ -27,8 +27,8 @@ export default function Footer() {
         <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-10">
           <div className="lg:col-span-2">
             <div className="flex items-center  gap-2 -mt-4 ">
-              <img src='logo.png' width={180}  height={100}/>
-             
+              <img src='logo.png' width={180} height={100} />
+
             </div>
             <p className="text-paper-white/60 text-sm leading-relaxed mb-6 max-w-sm">
               The best lands & houses for sale in Sri Lanka with all the facilities &
