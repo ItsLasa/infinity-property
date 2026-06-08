@@ -15,8 +15,9 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
-        name: '', location: '', district: '', price: '', unit: 'Per Perch Upwards', 
-        type: 'land', beds: 0, baths: 0, sqft: '', image: '', status: 'For Sale'
+        name: '', location: '', district: '', price: '', unit: 'Per Unit Upwards', 
+        type: 'land', beds: 0, baths: 0, sqft: '', image: '', status: 'For Sale',
+        description: '', images: '', mapUrl: '', amenities: ''
     });
     const [editingId, setEditingId] = useState(null);
 
@@ -64,7 +65,11 @@ export default function AdminDashboard() {
             }
             setShowModal(false);
             setEditingId(null);
-            setFormData({ name: '', location: '', district: '', price: '', unit: 'Per Unit Upwards', type: 'land', beds: 0, baths: 0, sqft: '', image: '', status: 'For Sale' });
+            setFormData({ 
+                name: '', location: '', district: '', price: '', unit: 'Per Unit Upwards', 
+                type: 'land', beds: 0, baths: 0, sqft: '', image: '', status: 'For Sale',
+                description: '', images: '', mapUrl: '', amenities: ''
+            });
             fetchData();
         } catch (error) {
             alert('Error saving property');
@@ -274,8 +279,24 @@ export default function AdminDashboard() {
                                     </>
                                 )}
                                 <div className="col-span-2">
-                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Image URL</label>
+                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Main Image URL</label>
                                     <input type="text" value={formData.image} onChange={(e) => setFormData({...formData, image: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-700/10 focus:border-emerald-700 text-sm outline-none" required />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Additional Image URLs (Comma Separated)</label>
+                                    <textarea value={formData.images} onChange={(e) => setFormData({...formData, images: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-700/10 focus:border-emerald-700 text-sm outline-none h-20" placeholder="https://image1.jpg, https://image2.jpg" />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Google Maps Embed URL</label>
+                                    <input type="text" value={formData.mapUrl} onChange={(e) => setFormData({...formData, mapUrl: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-700/10 focus:border-emerald-700 text-sm outline-none" placeholder="https://www.google.com/maps/embed?..." />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Amenities / Features (Comma Separated)</label>
+                                    <input type="text" value={formData.amenities} onChange={(e) => setFormData({...formData, amenities: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-700/10 focus:border-emerald-700 text-sm outline-none" placeholder="24/7 Security, Pool, Gym, Parking" />
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="text-[10px] font-bold uppercase text-gray-500 mb-1.5 block">Full Description</label>
+                                    <textarea value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-700/10 focus:border-emerald-700 text-sm outline-none h-32" required placeholder="Describe the property's features and location benefits..." />
                                 </div>
                             </div>
                             <div className="flex gap-3 mt-8">
