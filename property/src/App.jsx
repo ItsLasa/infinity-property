@@ -14,6 +14,7 @@ import ContactPage from './pages/ContactPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import AdminDashboard from './pages/AdminDashboard'
+import PropertyDetailsPage from './pages/PropertyDetailsPage'
 
 function HomePage() {
   return (
@@ -48,6 +49,7 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/properties/:id" element={<PropertyDetailsPage />} />
             <Route 
               path="/admin" 
               element={
